@@ -16,8 +16,7 @@ $(function () {
     return ids;
   };
 
-  const getPlace = () => {
-    const obj = {};
+  const getPlace = (obj) => {
     $.ajax({
       url: 'http://localhost:5001/api/v1/places_search',
       type: 'POST',
@@ -26,7 +25,7 @@ $(function () {
       data: JSON.stringify(obj),
       success: function (data) {
         for (const place of data) {
-            const template = `
+          const template = `
           <article>
             <div class='title_box'>
               <h2>${place.name}</h2>
@@ -49,16 +48,20 @@ $(function () {
               </div>
             </div>
           </article>
-            `
+            `;
           $('section.places').append(template);
         }
       }
     });
   };
 
-  getPlace();
-  $('input[type=checkbox]').on('click', addOrRemoveId);
-
+  getPlace({});
+  // $('input[type=checkbox]').on('click', addOrRemoveId);
+  $('button').click(function () {
+    const ids = { amenities: addOrRemoveId() };
+    $('.places').empty();
+    getPlace(ids);
+  });
   $.get('http://localhost:5001/api/v1/status/', function (data, statusTxt) {
     if (statusTxt === 'success' && data.status === 'OK') {
       $('#api_status').addClass('available');

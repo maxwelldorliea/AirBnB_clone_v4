@@ -1,7 +1,7 @@
 $(function () {
-  const addOrRemoveId = () => {
+  const amneityIds = () => {
     const ids = [];
-    const isChecked = $('input:checked');
+    const isChecked = $('.amenities input:checked');
     let str = '';
     let i = 0;
     for (const ele of isChecked) {
@@ -13,6 +13,40 @@ $(function () {
       i++;
     }
     $('.amenities > h4').text(str);
+    return ids;
+  };
+
+  const stateIds = () => {
+    const ids = [];
+    const isChecked = $('.locations .popover li > h2 > input:checked');
+    let str = '';
+    let i = 0;
+    for (const ele of isChecked) {
+      ids.push($(ele).attr('data-id'));
+      if (i !== 0) {
+        str += ', ';
+      }
+      str += $(ele).attr('data-name');
+      i++;
+    }
+    $('.locations > h4').text(str);
+    return ids;
+  };
+
+  const cityIds = () => {
+    const ids = [];
+    const isChecked = $('.locations .popover li > ul > li > input:checked');
+    let str = '';
+    let i = 0;
+    for (const ele of isChecked) {
+      ids.push($(ele).attr('data-id'));
+      if (i !== 0) {
+        str += ', ';
+      }
+      str += $(ele).attr('data-name');
+      i++;
+    }
+    $('.locations > h4').text(str);
     return ids;
   };
 
@@ -56,12 +90,22 @@ $(function () {
   };
 
   getPlace({});
-  $('input[type=checkbox]').on('click', addOrRemoveId);
+  $('.amenities input[type=checkbox]').on('click', amneityIds);
+  $('.locations .popover li > h2 > input[type=checkbox]').on('click', stateIds);
+  $('.locations .popover li > ul > li > input[type=checkbox]').on('click', cityIds);
   $('button').click(function () {
-    const ids = addOrRemoveId();
-    let obj = {}
-    if (ids.length > 0) {
-      obj = {"amenities": ids};
+    const amneityId = amneityIds();
+    const stateId = stateIds();
+    const cityId = cityIds();
+    const obj = {};
+    if (amneityId.length > 0) {
+      obj.amenities = amneityId;
+    }
+    if (stateId.length > 0) {
+      obj.states = stateId;
+    }
+    if (cityId.length > 0) {
+      obj.cities = cityId;
     }
     $('.places').empty();
     getPlace(obj);
